@@ -4,8 +4,10 @@
 #include <Windows.h>
 #include <msclr\marshal_cppstd.h>
 #include <ctime>
+#include "PIC16F84/main.cpp"
 // Use the Windows Forms namespace
 using namespace System::Windows::Forms;
+bool runProg;
 // Define the entry point for the application
 [System::STAThread]
 int main()
@@ -17,10 +19,10 @@ int main()
     // Run the application with Form1 as the main form
     Application::Run(gcnew CppCLRWinFormsProject::Form1());
     // Return 0 on success
+    runtime(false);
     return 0;
 }
 
-int datareg1[128][2];
 
 void CppCLRWinFormsProject::Form1::PopulateReg1()
 {
@@ -48,7 +50,7 @@ void CppCLRWinFormsProject::Form1::PopulateReg1()
         for (int j = 0; j < 8; j++)
         {
             int index = (i / 4) + (j * 8);
-            int value = datareg1[index][i % 4];
+            int value = ram.memory[index][i % 4];
             row->Cells[j]->Value = value.ToString("X2"); // Convert to hex and set the cell value
         }
 
@@ -63,12 +65,12 @@ void CppCLRWinFormsProject::Form1::Register1_CellEndEdit(System::Object^ sender,
     String^ hexValue = safe_cast<String^>(Register1->Rows[row]->Cells[col]->Value);
     int value = int::Parse(hexValue, System::Globalization::NumberStyles::HexNumber);
 
-    // Calculate the index of the datareg1 array based on row and column
+    // Calculate the index of the ram.memory array based on row and column
     int index = (row < 16) ? (row * 8 + col): (row * 8 + col - 128);
     int index2 = (row < 16) ? 0 : 1;
 
-    // Update the corresponding value in the datareg1 array
-    datareg1[index][index2] = value;
+    // Update the corresponding value in the ram.memory array
+    ram.memory[index][index2] = value;
 
     UpdateReg1();
 }
@@ -81,7 +83,7 @@ void CppCLRWinFormsProject::Form1::UpdateReg1()
         {
             int index = i*8+j;
             int index2 = (i < 16) ? 0 : 1;
-            int value = datareg1[index][index2]; 
+            int value = ram.memory[index][index2]; 
 
             Register1->Rows[i]->Cells[j]->Value = value.ToString("X2"); // Update the cell with the new value
         }
@@ -165,8 +167,8 @@ void CppCLRWinFormsProject::Form1::PopulateRARegister()
 
 void CppCLRWinFormsProject::Form1::PinButton_add(int num, int row)
 {
-    int value1 = datareg1[num][0]; // Assuming 0-based indexing
-    int value2 = datareg1[num][1];
+    int value1 = ram.memory[num][0]; // Assuming 0-based indexing
+    int value2 = ram.memory[num][1];
 
     for (int i = 0; i < 8; i++)
     {
@@ -197,7 +199,7 @@ void CppCLRWinFormsProject::Form1::UpdatePinButtons()
                 int dataregIndex = tagArray[0];
                 int bitIndex = tagArray[1];
 
-                int value = datareg1[dataregIndex][bitIndex / 16];
+                int value = ram.memory[dataregIndex][bitIndex / 16];
                 int bit = (value >> (bitIndex % 16)) & 1;
                 button->Text = (bit == 1) ? "1" : "0";
             }
@@ -217,16 +219,16 @@ void CppCLRWinFormsProject::Form1::PinButton_Click(System::Object^ sender, Syste
             int bitIndex = tagArray[1]; // Reverse the bit index
 
             // Update the corresponding bit in the datareg1 array
-            int bitValue = (datareg1[dataregIndex][bitIndex / 32] >> (bitIndex % 32)) & 1;
+            int bitValue = (ram.memory[dataregIndex][bitIndex / 32] >> (bitIndex % 32)) & 1;
             if (bitValue == 1)
             {
                 pinButton->Text = "0";
-                datareg1[dataregIndex][bitIndex / 32] &= ~(1 << (bitIndex % 32)); // Clear the bit
+                ram.memory[dataregIndex][bitIndex / 32] &= ~(1 << (bitIndex % 32)); // Clear the bit
             }
             else if (bitValue == 0)
             {
                 pinButton->Text = "1";
-                datareg1[dataregIndex][bitIndex / 32] |= (1 << (bitIndex % 32)); // Set the bit
+                ram.memory[dataregIndex][bitIndex / 32] |= (1 << (bitIndex % 32)); // Set the bit
             }
         }
     }
@@ -239,6 +241,7 @@ void CppCLRWinFormsProject::Form1::PinButton_Click(System::Object^ sender, Syste
 
 
 void CppCLRWinFormsProject::Form1::button2_Click(System::Object^ sender, System::EventArgs^ e) {
+    stepIn();
     static int currentRow = 0; // Variable to store the current row, initialized to 0
     static int previousRow = -1; // Variable to store the previously highlighted row, initialized to -1
 
@@ -373,10 +376,3 @@ int CppCLRWinFormsProject::Form1::FindLineNumber(String^ text, int cursorIndex)
 
     return lineNumber;
 }
-
-
-
-
-
-
-

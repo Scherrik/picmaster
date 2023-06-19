@@ -88,7 +88,7 @@ namespace CppCLRWinFormsProject {
 			// 
 			this->ProgramMemory->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Bottom | System::Windows::Forms::AnchorStyles::Left));
 			this->ProgramMemory->BorderStyle = System::Windows::Forms::BorderStyle::None;
-			this->ProgramMemory->Location = System::Drawing::Point(4, 157);
+			this->ProgramMemory->Location = System::Drawing::Point(4, 77);
 			this->ProgramMemory->Name = L"ProgramMemory";
 			this->ProgramMemory->Size = System::Drawing::Size(527, 379);
 			this->ProgramMemory->TabIndex = 0;
@@ -101,7 +101,7 @@ namespace CppCLRWinFormsProject {
 			this->label1->Enabled = false;
 			this->label1->Location = System::Drawing::Point(12, 51);
 			this->label1->Name = L"label1";
-			this->label1->Size = System::Drawing::Size(129, 20);
+			this->label1->Size = System::Drawing::Size(199, 29);
 			this->label1->TabIndex = 1;
 			this->label1->Text = L"Program Memory";
 			this->label1->TextAlign = System::Drawing::ContentAlignment::MiddleCenter;
@@ -122,7 +122,7 @@ namespace CppCLRWinFormsProject {
 			this->Register1->AutoSizeColumnsMode = System::Windows::Forms::DataGridViewAutoSizeColumnsMode::Fill;
 			this->Register1->AutoSizeRowsMode = System::Windows::Forms::DataGridViewAutoSizeRowsMode::AllCells;
 			this->Register1->ColumnHeadersHeightSizeMode = System::Windows::Forms::DataGridViewColumnHeadersHeightSizeMode::AutoSize;
-			this->Register1->Location = System::Drawing::Point(1135, 12);
+			this->Register1->Location = System::Drawing::Point(981, 12);
 			this->Register1->Name = L"Register1";
 			this->Register1->RowHeadersWidth = 62;
 			this->Register1->RowTemplate->Height = 28;
@@ -148,6 +148,7 @@ namespace CppCLRWinFormsProject {
 			this->button3->TabIndex = 5;
 			this->button3->Text = L"button3";
 			this->button3->UseVisualStyleBackColor = true;
+			this->button3->Click += gcnew System::EventHandler(this, &Form1::button3_Click);
 			// 
 			// button4
 			// 
@@ -157,6 +158,7 @@ namespace CppCLRWinFormsProject {
 			this->button4->TabIndex = 6;
 			this->button4->Text = L"button4";
 			this->button4->UseVisualStyleBackColor = true;
+			this->button4->Click += gcnew System::EventHandler(this, &Form1::button4_Click);
 			// 
 			// tableLayoutPanel1
 			// 
@@ -173,7 +175,7 @@ namespace CppCLRWinFormsProject {
 			// Form1
 			// 
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::None;
-			this->ClientSize = System::Drawing::Size(1496, 738);
+			this->ClientSize = System::Drawing::Size(1342, 658);
 			this->Controls->Add(this->tableLayoutPanel1);
 			this->Controls->Add(this->button4);
 			this->Controls->Add(this->button3);
@@ -221,6 +223,7 @@ namespace CppCLRWinFormsProject {
 
 private: System::Void button2_Click(System::Object^ sender, System::EventArgs^ e);
 private: System::Void ProgramMemory_Click(System::Object^ sender, System::EventArgs^ e);
-
+private: System::Void button3_Click(System::Object^ sender, System::EventArgs^ e);
+private: System::Void button4_Click(System::Object^ sender, System::EventArgs^ e);
 };
 }
